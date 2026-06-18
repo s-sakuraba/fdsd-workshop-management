@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Fdsd.Application/Fdsd.Application.csproj" />
+    <Project Path="src/Fdsd.Domain/Fdsd.Domain.csproj" />
+    <Project Path="src/Fdsd.Infrastructure/Fdsd.Infrastructure.csproj" />
+    <Project Path="src/Fdsd.Web/Fdsd.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Fdsd.Tests/Fdsd.Tests.csproj" />
+  </Folder>
+</Solution>

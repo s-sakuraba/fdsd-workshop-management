@@ -1,0 +1,105 @@
+@model Fdsd.Application.Common.UserDto
+@{
+    ViewData["Title"] = "Create";
+}
+
+<br />
+<div class="form-actions no-color">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>【新規登録】</h3>
+            <h4>※は入力必須項目です</h4>
+        </div>
+        <div class="col-sm-2">
+            <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal container">
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-group">
+                    <label class="control-label col-md-3">【教職員コード】※</label>
+                    <div class="col-md-5">
+                        <input name="empCd" type="number" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【教職員氏名】※</label>
+                    <div class="col-md-5">
+                        <input name="empName" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【アカウント名】※</label>
+                    <div class="col-md-5">
+                        <input name="empUserNm" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【学科名】※</label>
+                    <div class="col-md-5">
+                        <select name="gakkaCd" class="form-select" style="max-width:280px;" required>
+                            <option value="">-- 選択してください --</option>
+                            @if (ViewBag.GakkaList is IEnumerable<Fdsd.Application.Common.GakkaDto> gakkaList)
+                            {
+                                foreach (var item in gakkaList)
+                                {
+                                    <option value="@item.GakkaCd">@item.GakkaName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【入職日】※</label>
+                    <div class="col-md-5">
+                        <input type="date" name="nyusyaDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" style="max-width:200px;" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【区分】※</label>
+                    <div class="col-md-5">
+                        <select name="empKubun" class="form-select" style="max-width:280px;">
+                            <option value="">-- 選択してください --</option>
+                            @if (ViewBag.EmpKubunList is IEnumerable<Fdsd.Domain.Entities.T_Emp_Kubun> empKubunList)
+                            {
+                                foreach (var item in empKubunList)
+                                {
+                                    <option value="@item.EmpKubun">@item.KubunName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <button type="submit" class="btn btn-outline-dark btn-lg">登録</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

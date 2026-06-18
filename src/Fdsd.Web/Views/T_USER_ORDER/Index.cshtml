@@ -1,0 +1,122 @@
+@model List<Fdsd.Domain.Entities.T_User_Order>
+@{
+    ViewData["Title"] = "Index";
+    int i = 0;
+    var gakkaGroups = Model.OrderBy(x => x.GAKKACD).GroupBy(x => new { x.GAKKACD, x.GAKKANAME }).ToList();
+}
+
+<div class="col-sm-6">
+    <h2>教職員並び順の編集画面</h2>
+</div>
+<div class="col-sm-2">
+    <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+<p style="line-height:2rem">
+    <fieldset class="col-sm-12">
+        <legend>【表示対象学科】</legend>
+        <p>
+            <button type="button" id="check-all" class="btn btn-sm btn-outline-secondary">一括選択</button>
+            <button type="button" id="uncheck-all" class="btn btn-sm btn-outline-secondary">一括解除</button>
+        </p>
+
+        @foreach (var item in gakkaGroups)
+        {
+            <label class="col-sm-3">
+                <input type="checkbox" name="GAKKACD" value="@item.Key.GAKKACD" checked class="gakka-filter" />
+                @item.Key.GAKKANAME
+            </label>
+        }
+    </fieldset>
+</p>
+<hr />
+
+<form asp-action="Save" method="post">
+    @Html.AntiForgeryToken()
+
+    <table class="table">
+        <tr>
+            <th>
+                USERID
+            </th>
+            <th>
+                学校コード
+            </th>
+            <th>
+                学科コード
+            </th>
+            <th>
+                学科名
+            </th>
+            <th>
+                教職員番号
+            </th>
+            <th>
+                教職員氏名
+            </th>
+            <th>
+                並び順
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="GAKKACD-@item.GAKKACD">
+                <td class="col-sm-1">
+                    @item.USERID
+                </td>
+                <td class="col-sm-1">
+                    @item.CorpCd
+                </td>
+                <td class="col-sm-1">
+                    @item.GAKKACD
+                </td>
+                <td class="col-sm-3">
+                    @item.GAKKANAME
+                </td>
+                <td class="col-sm-1">
+                    @item.EmpCd
+                </td>
+                <td class="col-sm-2">
+                    @item.EmpName
+                </td>
+                <td class="col-sm-1">
+                    <input type="number" name="orders[@i].OrderNo" value="@item.OrderNo" class="form-control" style="width:80px;" />
+                </td>
+                <td>
+                    <input type="hidden" name="orders[@i].USERID" value="@item.USERID" />
+                    <input type="hidden" name="orders[@i].CorpCd" value="@item.CorpCd" />
+                    <input type="hidden" name="orders[@i].EmpCd" value="@item.EmpCd" />
+                    <input type="hidden" name="orders[@i].EmpName" value="@item.EmpName" />
+                    <input type="hidden" name="orders[@i].GAKKACD" value="@item.GAKKACD" />
+                    <input type="hidden" name="orders[@i].GAKKANAME" value="@item.GAKKANAME" />
+                </td>
+            </tr>
+            i++;
+        }
+    </table>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <button type="submit" class="btn btn-outline-dark btn-lg">並び順登録</button>
+            <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('check-all').addEventListener('click', function () {
+            document.querySelectorAll('.gakka-filter').forEach(function (cb) { cb.checked = true; toggleRows(cb.value, true); });
+        });
+        document.getElementById('uncheck-all').addEventListener('click', function () {
+            document.querySelectorAll('.gakka-filter').forEach(function (cb) { cb.checked = false; toggleRows(cb.value, false); });
+        });
+        document.querySelectorAll('.gakka-filter').forEach(function (cb) {
+            cb.addEventListener('change', function (e) { toggleRows(e.target.value, e.target.checked); });
+        });
+        function toggleRows(gakkaCd, show) {
+            document.querySelectorAll('tr.GAKKACD-' + gakkaCd).forEach(function (tr) { tr.style.display = show ? '' : 'none'; });
+        }
+    </script>
+}

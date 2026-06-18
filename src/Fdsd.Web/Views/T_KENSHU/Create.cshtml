@@ -1,0 +1,149 @@
+@model Fdsd.Web.Models.KenshuCreateModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<br />
+<div class="form-actions no-color">
+    <div class="col-sm-6">
+        <h3>【新規登録】</h3>
+        <h4>※は入力必須項目です</h4>
+    </div>
+    <div class="col-sm-2">
+        <a href="@Url.Action("Menu")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal container">
+        <div class="row">
+            <div class="form-group">
+                <br />
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-outline-dark btn-lg">登録</button>
+                </div>
+            </div>
+            <hr />
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label class="control-label col-md-3">【研修会名称】※</label>
+                    <div class="col-md-5">
+                        <input asp-for="KenshuName" class="form-control" required />
+                        <span asp-validation-for="KenshuName"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">【研修会開催日】※</label>
+                    <div class="col-md-6">
+                        <input type="date" name="KenshuDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" style="max-width:200px;" required />
+                        &#65374;
+                        <input type="date" name="EndDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" style="max-width:200px;" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【主催】※</label>
+                    <div class="col-md-5">
+                        <select name="ShusaiCd" class="form-select" style="max-width:280px;">
+                            <option value="1" selected>内部</option>
+                            <option value="2">外部</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【主催者名】※</label>
+                    <div class="col-md-5">
+                        <input asp-for="ShusaiName" class="form-control" required />
+                        <span asp-validation-for="ShusaiName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【開催形態】※</label>
+                    <div class="col-md-5">
+                        <select name="StyleCd" class="form-select" style="max-width:280px;">
+                            @if (ViewBag.StyleList is List<Fdsd.Domain.Entities.T_Kenshu_Style> styles)
+                            {
+                                foreach (var s in styles.OrderBy(x => x.SORT))
+                                {
+                                    <option value="@s.ID">@s.NAME</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【開催場所】※</label>
+                    <div class="col-md-5">
+                        <input asp-for="KenshuPlace" class="form-control" />
+                        <span asp-validation-for="KenshuPlace" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【研修会区分】※</label>
+                    <div class="col-md-5">
+                        <select name="FdsdCd" class="form-select" style="max-width:280px;">
+                            <option value="2" selected>FD</option>
+                            <option value="1">SD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【開催案内】※</label>
+                    <div class="col-md-5">
+                        <input type="file" name="UploadFile" id="uploadFile" required class="form-control" />
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <p>
+                    <label class="control-label">【学科】※</label>
+                    <button type="button" id="check-all" class="btn btn-sm btn-outline-secondary">全選択</button>
+                    <button type="button" id="uncheck-all" class="btn btn-sm btn-outline-secondary">全解除</button>
+                </p>
+                <table class="table">
+                    @if (ViewBag.GakkaList != null)
+                    {
+                        foreach (var item in ViewBag.GakkaList)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="GakkaCds" value="@item.GakkaCd" />
+                                </td>
+                                <td>
+                                    @item.GakkaName
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a href="@Url.Action("Menu")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('check-all').addEventListener('click', function () {
+            document.querySelectorAll('input[name="GakkaCds"]').forEach(c => c.checked = true);
+        });
+        document.getElementById('uncheck-all').addEventListener('click', function () {
+            document.querySelectorAll('input[name="GakkaCds"]').forEach(c => c.checked = false);
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

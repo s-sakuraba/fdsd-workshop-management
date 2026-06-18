@@ -1,0 +1,39 @@
+@model Fdsd.Domain.Entities.M_Gakka
+@{
+    ViewData["Title"] = "Delete";
+}
+<h3>本当に削除してもよろしいですか?</h3>
+<div>
+    <h3>学科削除</h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            学科名
+        </dt>
+        <dd>
+            @Model.GAKKANAME
+        </dd>
+        <dt>
+            略称
+        </dt>
+        <dd>
+            @Model.GAKKARYAKU
+        </dd>
+        <dt>
+            FDSD区分
+        </dt>
+        <dd>
+            @Model.FDSDCD
+        </dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.GAKKACD" />
+
+        <div class="form-actions no-color">
+            <button type="submit" class="btn btn-outline-dark">削除</button> |
+            <a href="@Url.Action("Index")" class="btn btn-secondary">戻る</a>
+        </div>
+    </form>
+</div>

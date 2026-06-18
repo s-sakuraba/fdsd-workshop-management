@@ -1,0 +1,99 @@
+@{
+    ViewData["Title"] = "Menu";
+    bool manageBtnVisible = ViewBag.ManageBtnVisible == true;
+}
+
+<br />
+<h4>仙台青葉学院短期大学</h4>
+<h2>FDSD研修管理システム</h2>
+<br />
+
+<form asp-action="Menu" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="form-actions no-color container">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <button type="submit" name="menuBtn" value="研修登録" style="width:214px;" class="btn btn-outline-dark btn-lg">研修登録</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit" name="menuBtn" value="研修編集" style="width:214px;" class="btn btn-success btn-lg">研修編集</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit" name="menuBtn" value="出欠入力" style="width:214px;" class="btn btn-success btn-lg">出欠入力</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit" name="menuBtn" value="帳票出力" style="width:214px;" class="btn btn-primary btn-lg">帳票出力</button>
+                        </td>
+                    </tr>
+
+                    @if (manageBtnVisible)
+                    {
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="所属異動管理" style="width:214px;" class="btn btn-warning btn-lg">所属異動管理</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="休職管理" style="width:214px;" class="btn btn-warning btn-lg">休職管理</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="教職員登録・編集" style="width:214px;" class="btn btn-info btn-lg">教職員登録・編集</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="教職員並び順編集" style="width:214px;" class="btn btn-info btn-lg">教職員並び順編集</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="学科登録・編集" style="width:214px;" class="btn btn-danger btn-lg">学科登録・編集</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="学科並び順編集" style="width:214px;" class="btn btn-danger btn-lg">学科並び順編集</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="従業員区分登録・編集" style="width:252px;" class="btn btn-outline-dark btn-lg">従業員区分登録・編集</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit" name="menuBtn" value="開催形態編集" style="width:214px;" class="btn btn-outline-dark btn-lg">開催形態編集</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <br />
+    </div>
+</form>
+<hr color="#FFFFFF">
+
+<div class="form-actions no-color">
+    <button type="button" id="exit-page" onclick="window.close()" class="btn btn-toolbar btn-lg">終了</button>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('exit-page').addEventListener('click', function () {
+            window.close();
+        });
+    </script>
+}

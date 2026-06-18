@@ -1,0 +1,27 @@
+@model Fdsd.Domain.Entities.T_Emp_Kubun
+@{
+    ViewData["Title"] = "Edit";
+}
+<h3>従業員区分編集</h3>
+<hr />
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="EmpKubun" value="@Model.EmpKubun" />
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-2">KubunName</label>
+            <div class="col-md-10">
+                <input name="KubunName" value="@Model.KubunName" class="form-control" style="max-width:280px;" required />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-outline-dark">編集</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+</div>

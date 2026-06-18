@@ -1,0 +1,27 @@
+@model Fdsd.Domain.Entities.T_Emp_Kubun
+@{
+    ViewData["Title"] = "Delete";
+}
+<h3>本当に削除してもよろしいですか?</h3>
+<div>
+    <h3>従業員区分削除</h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            KubunName
+        </dt>
+        <dd>
+            @Model.KubunName
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.EmpKubun" />
+
+        <div class="form-actions no-color">
+            <button type="submit" class="btn btn-outline-dark">削除</button> |
+            <a href="@Url.Action("Index")" class="btn btn-secondary">戻る</a>
+        </div>
+    </form>
+</div>

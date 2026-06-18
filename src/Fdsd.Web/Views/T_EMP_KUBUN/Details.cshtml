@@ -1,0 +1,20 @@
+@model Fdsd.Domain.Entities.T_Emp_Kubun
+@{
+    ViewData["Title"] = "Details";
+}
+<div>
+    <h3>従業員区分詳細</h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            KubunName
+        </dt>
+        <dd>
+            @Model.KubunName
+        </dd>
+    </dl>
+</div>
+<p>
+    <a href="@Url.Action("Edit", new { id = Model.EmpKubun })" class="btn btn-outline-dark">編集</a> |
+    <a href="@Url.Action("Index")" class="btn btn-secondary">戻る</a>
+</p>

@@ -1,0 +1,66 @@
+@model List<Fdsd.Application.Common.UserDto>
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="row">
+    <div class="col-sm-6">
+        <h2>教職員の登録編集画面</h2>
+    </div>
+    <div class="col-sm-2">
+        <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>
+<p>
+    <a href="@Url.Action("Create")" class="btn btn-outline-dark btn-lg">新規作成</a>
+</p>
+<br />
+
+<fieldset class="col-sm-12">
+    <table class="table">
+        <tr>
+            <th>
+                教職員番号
+            </th>
+            <th>
+                教職員氏名
+            </th>
+            <th>
+                アカウント名
+            </th>
+            <th>
+                学科名
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.EmpCd
+                </td>
+                <td>
+                    @item.EmpName
+                </td>
+                <td>
+                    @item.EmpUserNm
+                </td>
+                <td>
+                    @item.GakkaName
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", new { id = item.UserId })" class="btn btn-outline-dark btn-sm">詳細</a>
+                    <a href="@Url.Action("Edit", new { id = item.UserId })" class="btn btn-outline-dark btn-sm">編集</a>
+                    <a href="@Url.Action("Delete", new { id = item.UserId })" class="btn btn-outline-dark btn-sm">削除</a>
+                </td>
+                <td class="col-sm-3"></td>
+            </tr>
+        }
+    </table>
+</fieldset>
+
+<div class="form-group">
+    <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+</div>

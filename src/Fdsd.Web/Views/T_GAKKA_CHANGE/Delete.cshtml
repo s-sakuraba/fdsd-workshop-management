@@ -1,0 +1,48 @@
+@model Fdsd.Application.Common.GakkaChangeDto
+@{
+    ViewData["Title"] = "Delete";
+}
+<h3>本当に削除してもよろしいですか?</h3>
+<div>
+    <h3>所属削除</h3>
+    <div class="col-sm-2">
+        <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            EmpName
+        </dt>
+        <dd>
+            @Model.EmpName
+        </dd>
+        <dt>
+            GakkaName
+        </dt>
+        <dd>
+            @Model.GakkaName
+        </dd>
+        <dt>
+            DateOfArrival
+        </dt>
+        <dd>
+            @Model.DateOfArrival.ToString("yyyy/MM/dd")
+        </dd>
+        <dt>
+            date_of_departure
+        </dt>
+        <dd>
+            @Model.DateOfDeparture?.ToString("yyyy/MM/dd")
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="form-actions no-color">
+            <button type="submit" class="btn btn-outline-dark">Delete</button> |
+            <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </form>
+</div>

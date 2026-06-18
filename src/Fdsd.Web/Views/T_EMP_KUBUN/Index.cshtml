@@ -1,0 +1,46 @@
+@model List<Fdsd.Domain.Entities.T_Emp_Kubun>
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="col-sm-6">
+    <h2>従業員区分一覧画面</h2>
+</div>
+<div class="col-sm-6">
+    <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            EmpKubun
+        </th>
+        <th>
+            KubunName
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.EmpKubun
+            </td>
+            <td>
+                @item.KubunName
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", new { id = item.EmpKubun })" class="btn btn-outline-dark btn-sm">編集</a>
+                <a href="@Url.Action("Details", new { id = item.EmpKubun })" class="btn btn-outline-dark btn-sm">詳細</a>
+                <a href="@Url.Action("Delete", new { id = item.EmpKubun })" class="btn btn-outline-dark btn-sm">削除</a>
+            </td>
+        </tr>
+    }
+
+    <div class="col-sm-12">
+        <p>
+            従業員区分の新規登録はこちらから：
+            <a href="@Url.Action("Create")" class="btn btn-outline-dark btn-sm">新規登録</a>
+        </p>
+    </div>
+</table>

@@ -1,0 +1,50 @@
+@model List<Fdsd.Application.Common.LeaveOfAbsenceDto>
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="col-sm-6">
+    <h2>休職管理</h2>
+</div>
+<div class="col-sm-2">
+    <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+<div class="col-sm-12">
+    <p>
+        休職の新規登録はこちらから：
+        <a href="@Url.Action("Create")" class="btn btn-outline-dark btn-sm">新規登録</a>
+    </p>
+</div>
+<table class="table">
+    <tr>
+        <th>
+            EmpName
+        </th>
+        <th>
+            StartDate
+        </th>
+        <th>
+            EndDate
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.EmpName
+            </td>
+            <td>
+                @item.StartDate.ToString("yyyy/MM/dd")
+            </td>
+            <td>
+                @(item.EndDate?.ToString("yyyy/MM/dd") ?? "継続中")
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-outline-dark btn-sm">編集</a>
+                <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-outline-dark btn-sm">削除</a>
+            </td>
+        </tr>
+    }
+</table>
+<a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>

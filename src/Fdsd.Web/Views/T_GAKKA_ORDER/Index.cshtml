@@ -1,0 +1,58 @@
+@model List<Fdsd.Domain.Entities.T_Gakka_Order>
+@{
+    ViewData["Title"] = "Index";
+    int i = 0;
+    var gakkaNames = (Dictionary<short, string>)ViewBag.GakkaNamesLookup;
+}
+
+<div class="col-sm-6">
+    <h2>学科並び順の編集画面</h2>
+</div>
+<div class="col-sm-2">
+    <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+<form asp-action="Save" method="post">
+    @Html.AntiForgeryToken()
+
+    <table class="table">
+        <tr>
+            <th>
+                学科コード
+            </th>
+            <th>
+                学科名
+            </th>
+            <th>
+                並び順
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            var gakkaName = gakkaNames.TryGetValue(item.GAKKACD, out var gn) ? gn : "";
+            <tr>
+                <td class="col-sm-1">
+                    @item.GAKKACD
+                </td>
+                <td class="col-sm-3">
+                    @gakkaName
+                </td>
+                <td class="col-sm-1">
+                    <input type="number" name="orders[@i].OrderNo" value="@item.OrderNo" class="form-control" style="width:80px;" />
+                </td>
+                <td>
+                    <input type="hidden" name="orders[@i].GAKKACD" value="@item.GAKKACD" />
+                </td>
+            </tr>
+            i++;
+        }
+    </table>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <button type="submit" class="btn btn-outline-dark btn-lg">並び順登録</button>
+            <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+</form>

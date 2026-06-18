@@ -1,0 +1,186 @@
+@model Fdsd.Application.Common.KenshuDetailDto
+@using Fdsd.Application.Common
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<br />
+<div class="form-actions no-color">
+    <div class="col-sm-6">
+        <h3>【編集】</h3>
+        <h4>※は入力必須項目です</h4>
+        <h4 class="text-danger">※ブラウザバックを押さないでください。<br />状態が正しく保存されない場合があります。</h4>
+    </div>
+    <div class="col-sm-2">
+        <a href="@Url.Action("GetSearchResult")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="id" value="@Model.KenshuCd" />
+
+    <div class="form-horizontal container">
+        <div class="row">
+            <div class="form-group">
+                <br />
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-outline-dark btn-lg">修正</button>
+                </div>
+            </div>
+            <hr />
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【研修会名称】※</label>
+                    <div class="col-md-5">
+                        <input name="KenshuName" value="@Model.KenshuName" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【研修会開催日】※</label>
+                    <div class="col-md-5">
+                        <input type="date" name="KenshuDate" value="@Model.KenshuDate.ToString("yyyy-MM-dd")" class="form-control" style="max-width:200px;" required />
+                        &#65374;
+                        <input type="date" name="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd") ?? Model.KenshuDate.ToString("yyyy-MM-dd"))" class="form-control" style="max-width:200px;" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【主催】※</label>
+                    <div class="col-md-5">
+                        <select name="ShusaiCd" class="form-select" style="max-width:280px;">
+                            @if (Model.ShusaiCd == 1) { <option value="1" selected>内部</option> } else { <option value="1">内部</option> }
+                            @if (Model.ShusaiCd == 2) { <option value="2" selected>外部</option> } else { <option value="2">外部</option> }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【主催者名】※</label>
+                    <div class="col-md-5">
+                        <input name="ShusaiName" value="@Model.ShusaiName" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【開催形態】※</label>
+                    <div class="col-md-5">
+                        <select name="StyleCd" class="form-select" style="max-width:280px;">
+                            @if (ViewBag.StyleList is List<Fdsd.Domain.Entities.T_Kenshu_Style> styles)
+                            {
+                                foreach (var s in styles)
+                                {
+                                    if (s.ID == Model.KstyleCd) { <option value="@s.ID" selected>@s.NAME</option> }
+                                    else { <option value="@s.ID">@s.NAME</option> }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【開催場所】※</label>
+                    <div class="col-md-5">
+                        <input name="KenshuPlace" value="@Model.KenshuPlace" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【研修会区分】※</label>
+                    <div class="col-md-5">
+                        <select name="FdsdCd" class="form-select" style="max-width:280px;">
+                            @if (Model.FdsdCd == 1) { <option value="1" selected>SD</option> } else { <option value="1">SD</option> }
+                            @if (Model.FdsdCd == 2) { <option value="2" selected>FD</option> } else { <option value="2">FD</option> }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【開催案内】※</label>
+                    <div class="col-md-5">
+                        @if (!string.IsNullOrEmpty(Model.InfoDocu))
+                        {
+                            <p class="form-control-plaintext">@Model.InfoDocu</p>
+                            <input type="hidden" name="InfoDocu" value="@Model.InfoDocu" />
+                        }
+                        <span id="fileItem">
+                            <input type="file" name="UploadFile" id="uploadFile" class="form-control" />
+                        </span>
+                        <br />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【配布資料】</label>
+                    <div class="form-actions no-color col-md-5">
+                        <a href="@Url.Action("Create", "W_KENSHU_DOCUMENT", new { id = Model.KenshuCd })" class="btn btn-outline-dark btn-sm">資料追加</a>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <table class="table">
+                        @if (Model.Documents != null)
+                        {
+                            foreach (var item in Model.Documents)
+                            {
+                                <tr>
+                                    <td class="col-md-5">
+                                        @item.DocumentName
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("Delete", "W_KENSHU_DOCUMENT", new { id = item.Id })" class="btn btn-outline-dark btn-sm">削除</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <p>
+                    <label class="control-label">【学科】※</label>
+                    <button type="button" id="check-all" class="btn btn-sm btn-outline-secondary">全選択</button>
+                    <button type="button" id="uncheck-all" class="btn btn-sm btn-outline-secondary">全解除</button>
+                </p>
+                <table class="table">
+                    @if (ViewBag.GakkaList is List<GakkaDto> gakkaList)
+                    {
+                        foreach (var item in gakkaList)
+                        {
+                            var isChecked = Model.GakkaCds?.Contains(item.GakkaCd) == true;
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="GakkaCds" value="@item.GakkaCd" @(isChecked ? "checked" : "") />
+                                </td>
+                                <td>
+                                    @item.GakkaName
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    <a href="@Url.Action("GetSearchResult")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById('check-all').addEventListener('click', function () {
+            document.querySelectorAll('input[name="GakkaCds"]').forEach(c => c.checked = true);
+        });
+        document.getElementById('uncheck-all').addEventListener('click', function () {
+            document.querySelectorAll('input[name="GakkaCds"]').forEach(c => c.checked = false);
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

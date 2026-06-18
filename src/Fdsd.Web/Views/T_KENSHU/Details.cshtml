@@ -1,0 +1,128 @@
+@model Fdsd.Application.Common.KenshuDetailDto
+@using Fdsd.Application.Common
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <br />
+        <div class="col-sm-6">
+            <h4>研修会</h4>
+            <h3>@Model.KenshuName</h3>
+            <h4>詳細</h4>
+        </div>
+        <div class="col-sm-2">
+            <a href="@Url.Action("GetSearchResult", new { actName = "戻る" })" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    【研修会名称】
+                </dt>
+                <dd>
+                    @Model.KenshuName
+                </dd>
+                <dt>
+                    【研修会開催日】
+                </dt>
+                <dd>
+                    @Model.KenshuDate.ToString("yyyy/MM/dd")
+                    @if (Model.EndDate.HasValue)
+                    {
+                        <span>～</span> @Model.EndDate.Value.ToString("yyyy/MM/dd")
+                    }
+                </dd>
+                <dt>
+                    【主催】
+                </dt>
+                <dd>
+                    @(Model.ShusaiCd == 1 ? "内部" : "外部")
+                </dd>
+                <dt>
+                    【主催者名】
+                </dt>
+                <dd>
+                    @Model.ShusaiName
+                </dd>
+                <dt>
+                    【開催形態】
+                </dt>
+                <dd>
+                    @Model.KstyleName
+                </dd>
+                <dt>
+                    【開催場所】
+                </dt>
+                <dd>
+                    @Model.KenshuPlace
+                </dd>
+                <dt>
+                    【研修会区分】
+                </dt>
+                <dd>
+                    @(Model.FdsdCd == 1 ? "SD" : "FD")
+                </dd>
+            </dl>
+        </div>
+        <hr />
+        <div class="col-md-6">
+            <div class="form-group">
+                【学科】
+                @if (Model.GakkaNames != null)
+                {
+                    foreach (var name in Model.GakkaNames)
+                    {
+                        <h5>@name</h5>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-10">
+                【研修開催案内】
+                <table class="table">
+                    <tr>
+                        <td>
+                            @Model.InfoDocu
+                        </td>
+                        <td>
+                            <a href="@Url.Action("InfoDocuDownload", new { targetfile = Model.InfoDocu, id = Model.KenshuCd })" class="btn btn-primary btn-sm">ダウンロード</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                【配布資料】
+                <table class="table">
+                    @if (Model.Documents != null)
+                    {
+                        foreach (var item in Model.Documents)
+                        {
+                            <tr>
+                                <td>
+                                    @item.DocumentName
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("DocumentDownload", new { targetfile = item.DocumentName, id = Model.KenshuCd })" class="btn btn-primary btn-sm">ダウンロード</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <a href="@Url.Action("GetSearchResult", new { actName = "戻る" })" class="btn btn-sm btn-secondary">戻る</a>
+    </p>
+</div>

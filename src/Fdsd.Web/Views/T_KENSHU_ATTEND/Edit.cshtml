@@ -1,0 +1,184 @@
+@model List<Fdsd.Application.Common.AttendItemDto>
+@{
+    ViewData["Title"] = "Edit";
+    string kenshuNAME = ViewBag.KenshuName as string ?? "";
+}
+
+@{
+    var queryGakka = Model.OrderBy(x => x.GakkaOrderNo).GroupBy(x => new { GAKKACD = x.GakkaCd, GAKKANAME = x.GakkaName });
+}
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <p>
+            <div class="col-sm-6">
+                <h2>【研修会名称】</h2>
+                <h3>@kenshuNAME</h3>
+            </div>
+            <div class="col-sm-2">
+                <a href="@Url.Action("GetSearchResult", "T_KENSHU", new { actName = "戻る" })" class="btn btn-sm btn-secondary">戻る</a>
+            </div>
+        </p>
+        <hr />
+
+        <br />
+
+        <div>
+            <p style="line-height:2rem">
+                <fieldset class="col-sm-12">
+                    <legend>【表示対象学科】</legend>
+                    <p>
+                        <button type="button" id="check-all" class="btn btn-sm btn-outline-secondary">一括選択</button>
+                        <button type="button" id="uncheck-all" class="btn btn-sm btn-outline-secondary">一括解除</button>
+                    </p>
+
+                    @foreach (var item in queryGakka)
+                    {
+                        <label class="col-sm-3">
+                            <input type="checkbox" name="GAKKACD" value="@item.Key.GAKKACD" checked class="gakka-filter" />
+                            @item.Key.GAKKANAME
+                        </label>
+                    }
+                </fieldset>
+            </p>
+            <hr />
+        </div>
+
+        <div>
+            <p style="line-height:2rem">
+                <fieldset class="col-sm-12">
+                    <legend>【出席対象者】</legend>
+                    <label for="attendcount">出席者数</label><input id="attendcount" readonly />人
+                    <label for="absentcount">欠席者数</label><input id="absentcount" readonly />人
+                    <label for="notcoveredcount">対象外数</label><input id="notcoveredcount" readonly />人
+                    <div id="app"></div>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    学科
+                                </th>
+                                <th>
+                                    USERID
+                                </th>
+                                <th>
+                                    教職員氏名
+                                </th>
+                                <th>
+                                    出席
+                                </th>
+                                <th>
+                                    欠席
+                                </th>
+                                <th>
+                                    対象外
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int cnt = 0;
+                            }
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row[@cnt]" class="GAKKACD-@item.GakkaCd">
+                                    <td class="col-sm-3 text-center">
+                                        @item.GakkaName
+                                    </td>
+                                    <td class="col-sm-1">
+                                        @item.UserId
+                                    </td>
+                                    <td class="col-sm-2">
+                                        @item.EmpName
+                                    </td>
+                                    <td class="col-sm-1">
+                                        <input type="radio" name="attend[@cnt]" value="1" @(item.Attend == 1 ? "checked" : "") class="attend-radio" data-row="@cnt" />
+                                    </td>
+                                    <td class="col-sm-1">
+                                        <input type="radio" name="attend[@cnt]" value="0" @(item.Attend == 0 ? "checked" : "") class="attend-radio" data-row="@cnt" />
+                                    </td>
+                                    <td class="col-sm-1">
+                                        <input type="radio" name="attend[@cnt]" value="3" @(item.Attend == 3 ? "checked" : "") class="attend-radio" data-row="@cnt" />
+                                    </td>
+                                    <td>
+                                        <input name="attendList[@cnt].UserId" type="hidden" value="@item.UserId" />
+                                        <input name="attendList[@cnt].EmpName" type="hidden" value="@item.EmpName" />
+                                        <input name="attendList[@cnt].GakkaCd" type="hidden" value="@item.GakkaCd" />
+                                        <input name="attendList[@cnt].GakkaName" type="hidden" value="@item.GakkaName" />
+                                        <input name="attendList[@cnt].Attend" type="hidden" value="@item.Attend" data-attend-hidden="@cnt" />
+                                        <input name="attendList[@cnt].GakkaOrderNo" type="hidden" value="@item.GakkaOrderNo" />
+                                        <input name="attendList[@cnt].UserOrderNo" type="hidden" value="@item.UserOrderNo" />
+                                    </td>
+                                </tr>
+                                cnt++;
+                            }
+                        </tbody>
+                    </table>
+                </fieldset>
+            </p>
+            <hr />
+        </div>
+
+        <div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-outline-dark btn-lg">出欠登録</button>
+                    <a href="@Url.Action("GetSearchResult", "T_KENSHU", new { actName = "戻る" })" class="btn btn-sm btn-secondary">戻る</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function updateCounts() {
+            var attendCount = 0, absentCount = 0, notCoveredCount = 0;
+            document.querySelectorAll('.attend-radio:checked').forEach(function(r) {
+                var v = parseInt(r.value);
+                if (v === 1) attendCount++;
+                else if (v === 0) absentCount++;
+                else if (v === 3) notCoveredCount++;
+            });
+            document.getElementById('attendcount').value = attendCount;
+            document.getElementById('absentcount').value = absentCount;
+            document.getElementById('notcoveredcount').value = notCoveredCount;
+        }
+
+        document.querySelectorAll('.attend-radio').forEach(function(r) {
+            r.addEventListener('change', function() {
+                var row = r.getAttribute('data-row');
+                var hidden = document.querySelector('input[data-attend-hidden="' + row + '"]');
+                if (hidden) hidden.value = r.value;
+                updateCounts();
+            });
+        });
+
+        var filterCheckboxes = document.querySelectorAll('input.gakka-filter');
+        filterCheckboxes.forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                var gakkaCd = cb.value;
+                var rows = document.querySelectorAll('tr.GAKKACD-' + gakkaCd);
+                rows.forEach(function(r) { r.style.display = cb.checked ? '' : 'none'; });
+                updateCounts();
+            });
+        });
+
+        document.getElementById('check-all').addEventListener('click', function() {
+            filterCheckboxes.forEach(function(c) { c.checked = true; });
+            document.querySelectorAll('tr[class*="GAKKACD-"]').forEach(function(r) { r.style.display = ''; });
+            updateCounts();
+        });
+        document.getElementById('uncheck-all').addEventListener('click', function() {
+            filterCheckboxes.forEach(function(c) { c.checked = false; });
+            document.querySelectorAll('tr[class*="GAKKACD-"]').forEach(function(r) { r.style.display = 'none'; });
+            updateCounts();
+        });
+
+        updateCounts();
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

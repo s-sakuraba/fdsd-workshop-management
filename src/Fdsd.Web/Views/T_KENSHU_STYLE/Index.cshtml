@@ -1,0 +1,61 @@
+@model List<Fdsd.Domain.Entities.T_Kenshu_Style>
+@{
+    ViewData["Title"] = "Index";
+    int i = 0;
+}
+<div class="row">
+    <div class="col-sm-6">
+        <h2>開催形態 並び順の編集画面</h2>
+    </div>
+    <div class="col-sm-2">
+        <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>
+
+<p>
+    <a href="@Url.Action("Create")" class="btn btn-outline-dark btn-lg">新規作成</a>
+</p>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+
+    <br />
+    <table class="table">
+        <tr>
+            <th>
+                開催形態名
+            </th>
+            <th>
+                並び順
+            </th>
+            @*<th>
+                備考
+            </th>*@
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="col-sm-3">
+                    @item.NAME
+                    <input type="hidden" name="ids" value="@item.ID" />
+                </td>
+                <td class="col-sm-1">
+                    <input type="number" name="sorts" value="@item.SORT" class="form-control" style="width:80px;" />
+                </td>
+                <td class="col-sm-1">
+                    <a href="@Url.Action("Delete", new { id = item.ID })" class="btn btn-sm btn-outline-dark">削除</a>
+                </td>
+                <td class="col-sm-1">
+                </td>
+            </tr>
+            i++;
+        }
+    </table>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-outline-dark btn-lg">並び順登録</button>
+        <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</form>

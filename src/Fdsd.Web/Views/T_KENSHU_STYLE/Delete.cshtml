@@ -1,0 +1,46 @@
+@model Fdsd.Domain.Entities.T_Kenshu_Style
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container">
+    <div class="row">
+        <br />
+        <div class="col-sm-6">
+            <h4>開催形態</h4>
+            <h3>@Model.NAME</h3>
+            <h4>を削除しますか？</h4>
+        </div>
+        <div class="col-sm-2">
+            <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    【開催形態名称】
+                </dt>
+                <dd>
+                    @Model.NAME
+                </dd>
+                <dt>
+                    【備考】
+                </dt>
+                <dd>
+                    @Model.BIKO
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.ID" />
+
+        <div class="form-actions no-color">
+            <button type="submit" class="btn btn-outline-dark btn-lg">削除</button>
+            <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,63 @@
+@model Fdsd.Application.Common.UserDto
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <br />
+        <div class="col-sm-6">
+            <h3>教職員</h3>
+            <h4>詳細</h4>
+        </div>
+        <div class="col-sm-2">
+            <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    【教職員コード】
+                </dt>
+                <dd>
+                    @Model.EmpCd
+                </dd>
+                <dt>
+                    【教職員氏名】
+                </dt>
+                <dd>
+                    @Model.EmpName
+                </dd>
+                <dt>
+                    【アカウント名】
+                </dt>
+                <dd>
+                    @Model.EmpUserNm
+                </dd>
+                <dt>
+                    【学科名】
+                </dt>
+                <dd>
+                    @Model.GakkaName
+                </dd>
+                <dt>
+                    【入職日】
+                </dt>
+                <dd>
+                    @Model.NyusyaDate?.ToString("yyyy/MM/dd")
+                </dd>
+                <dt>
+                    【区分】
+                </dt>
+                <dd>
+                    @(ViewBag.EmpKubunName as string ?? "未設定")
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <p>
+        <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+    </p>
+</div>

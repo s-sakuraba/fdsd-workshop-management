@@ -1,0 +1,106 @@
+@model List<Fdsd.Application.Common.GakkaChangeDto>
+@{
+    ViewData["Title"] = "Index";
+    DateTime dateTimeToCheck = new DateTime(9999, 12, 31);
+    int i = 0;
+}
+
+<h2>所属異動管理</h2>
+<div class="col-sm-2">
+    <a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+@{
+    var queryGakka = Model
+        .OrderBy(x => x.GakkaCd)
+        .GroupBy(x => new { GAKKACD = x.GakkaCd, GAKKANAME = x.GakkaName });
+}
+
+<p style="line-height:2rem">
+    <fieldset class="col-sm-12">
+        <legend>【表示対象学科】</legend>
+        <p>
+            <button type="button" id="check-all" class="btn btn-sm btn-outline-secondary">一括選択</button>
+            <button type="button" id="uncheck-all" class="btn btn-sm btn-outline-secondary">一括解除</button>
+        </p>
+
+        @foreach (var item in queryGakka)
+        {
+            <label class="col-sm-3">
+                <input type="checkbox" name="GAKKACD" value="@item.Key.GAKKACD" checked class="gakka-filter" />
+                @item.Key.GAKKANAME
+            </label>
+        }
+    </fieldset>
+</p>
+<hr />
+
+<table class="table">
+    <tr>
+        <th>
+            学科
+        </th>
+        <th>
+            氏名
+        </th>
+        <th>
+            所属開始
+        </th>
+        <th>
+            所属終了
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr class="GAKKACD-@item.GakkaCd">
+            <td>
+                @item.GakkaName
+            </td>
+            <td>
+                @item.EmpName
+            </td>
+            <td>
+                @item.DateOfArrival.ToString("yyyy/MM/dd")
+            </td>
+            <td>
+                @item.DateOfDeparture?.ToString("yyyy/MM/dd")
+            </td>
+            <td>
+                @if (!item.DateOfDeparture.HasValue || item.DateOfDeparture.Value == dateTimeToCheck)
+                {
+                    <a href="@Url.Action("Create", new { userId = item.UserId })" class="btn btn-outline-dark btn-sm">所属登録</a>
+                }
+                else
+                {
+                    <span style="color:gray">所属登録</span>
+                }
+                |
+                <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-outline-dark btn-sm">削除</a>
+            </td>
+        </tr>
+    }
+</table>
+<a href="@Url.Action("Menu", "T_KENSHU")" class="btn btn-sm btn-secondary">戻る</a>
+
+@section Scripts {
+    <script>
+        var filterCheckboxes = document.querySelectorAll('input.gakka-filter');
+        filterCheckboxes.forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                var gakkaCd = cb.value;
+                var rows = document.querySelectorAll('tr.GAKKACD-' + gakkaCd);
+                rows.forEach(function(r) { r.style.display = cb.checked ? '' : 'none'; });
+            });
+        });
+        document.getElementById('check-all').addEventListener('click', function() {
+            filterCheckboxes.forEach(function(c) { c.checked = true; });
+            document.querySelectorAll('tr[class*="GAKKACD-"]').forEach(function(r) { r.style.display = ''; });
+        });
+        document.getElementById('uncheck-all').addEventListener('click', function() {
+            filterCheckboxes.forEach(function(c) { c.checked = false; });
+            document.querySelectorAll('tr[class*="GAKKACD-"]').forEach(function(r) { r.style.display = 'none'; });
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

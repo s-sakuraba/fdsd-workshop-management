@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "SearchCondition";
+}
+
+@{
+    // 現在日付から年度開始日と年度終了日を作成
+    DateTime baseDate = DateTime.Now;
+    DateTime startDate, endDate;
+
+    if (baseDate.Month <= 3)
+    {
+        startDate = new DateTime(baseDate.AddYears(-1).Year, 4, 1);
+        endDate = new DateTime(baseDate.Year, 3, 31);
+    }
+    else
+    {
+        startDate = new DateTime(baseDate.Year, 4, 1);
+        endDate = new DateTime(baseDate.AddYears(1).Year, 3, 31);
+    }
+
+    string menuBtn = ViewBag.ActName as string ?? "研修編集";
+}
+
+<div class="row">
+    <div class="col-sm-6">
+        <h2>研修検索・csv出力</h2>
+    </div>
+    <div class="col-sm-2">
+        <a href="@Url.Action("Menu")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>
+<br />
+<p></p>
+<hr color="#FFFFFF">
+
+<form asp-action="Search" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="MenuBtn" value="@menuBtn" />
+
+    <div class="form-actions no-color container">
+        <div class="row">
+            <div class="form-group">
+                @{
+                    if (menuBtn == "帳票出力")
+                    {
+                        <button type="submit" name="ActName" value="未受講者出力" class="btn btn-primary btn-lg">未受講者出力</button>
+                        <button type="submit" name="ActName" value="学科別 受講者出力" class="btn btn-primary btn-lg">学科別 受講者出力</button>
+                        <button type="submit" name="ActName" value="研修実績一覧表出力" class="btn btn-primary btn-lg">研修実績一覧表出力</button>
+                    }
+                    else
+                    {
+                        <button type="submit" name="ActName" value="検索" class="btn btn-outline-dark btn-lg">検索</button>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4>【研修検索】</h4>
+                <h5>【期間】</h5>
+                <h5>開始日</h5>
+                <input type="date" name="StartDate" value="@(startDate.ToString("yyyy-MM-dd"))" class="form-control" style="max-width:280px;" />
+
+                <h5>終了日</h5>
+                <input type="date" name="EndDate" value="@(endDate.ToString("yyyy-MM-dd"))" class="form-control" style="max-width:280px;" />
+
+                <h5>【研修会区分】</h5>
+                <h5><input type="checkbox" name="FdsdCds" value="2" checked /> FD</h5>
+                <h5><input type="checkbox" name="FdsdCds" value="1" checked /> SD</h5>
+            </div>
+            <div class="col-md-6">
+                <h5>【学科】</h5>
+                <p>
+                    <button type="button" id="check-all" class="btn btn-sm btn-outline-secondary">全選択</button>
+                    <button type="button" id="uncheck-all" class="btn btn-sm btn-outline-secondary">全解除</button>
+                </p>
+                @if (ViewBag.GakkaList != null)
+                {
+                    foreach (var g in ViewBag.GakkaList)
+                    {
+                        <h5><input type="checkbox" name="GakkaCds" value="@g.GakkaCd" checked /> @g.GakkaName</h5>
+                    }
+                }
+                <br />
+            </div>
+        </div>
+    </div>
+</form>
+<p></p>
+<hr color="#FFFFFF">
+
+<div class="form-actions no-color">
+    <a href="@Url.Action("Menu")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('check-all').addEventListener('click', function () {
+            document.querySelectorAll('input[name="GakkaCds"]').forEach(c => c.checked = true);
+        });
+        document.getElementById('uncheck-all').addEventListener('click', function () {
+            document.querySelectorAll('input[name="GakkaCds"]').forEach(c => c.checked = false);
+        });
+    </script>
+}

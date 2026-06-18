@@ -1,0 +1,106 @@
+@model Fdsd.Application.Common.UserDto
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<br />
+<div class="form-actions no-color">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>【編集】</h3>
+            <h4>※は入力必須項目です</h4>
+        </div>
+        <div class="col-sm-2">
+            <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal container">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="hidden" name="id" value="@Model.UserId" />
+
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-group">
+                    <label class="control-label col-md-3">【教職員コード】※</label>
+                    <div class="col-md-5">
+                        <input name="empCd" type="number" value="@Model.EmpCd" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【教職員氏名】※</label>
+                    <div class="col-md-5">
+                        <input name="empName" value="@Model.EmpName" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【アカウント名】※</label>
+                    <div class="col-md-5">
+                        <input name="empUserNm" value="@Model.EmpUserNm" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【学科名】※</label>
+                    <div class="col-md-5">
+                        <input type="hidden" name="gakkaCd" value="@Model.GakkaCd" />
+                        <p class="form-control-plaintext">@Model.GakkaName</p>
+                        <small class="text-muted">※所属学科の変更は学科異動管理機能を使用して下さい</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【入職日】※</label>
+                    <div class="col-md-5">
+                        <p class="form-control-plaintext">@Model.NyusyaDate?.ToString("yyyy/MM/dd")</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">【区分】※</label>
+                    <div class="col-md-5">
+                        <select name="empKubun" class="form-select" style="max-width:280px;">
+                            <option value="">-- 未設定 --</option>
+                            @if (ViewBag.EmpKubunList is IEnumerable<Fdsd.Domain.Entities.T_Emp_Kubun> empKubunList)
+                            {
+                                foreach (var k in empKubunList)
+                                {
+                                    if (Model.EmpKubun.HasValue && Model.EmpKubun.Value == k.EmpKubun)
+                                    {
+                                        <option value="@k.EmpKubun" selected>@k.KubunName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@k.EmpKubun">@k.KubunName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <br />
+                    <div class="col-md-10">
+                        <button type="submit" class="btn btn-outline-dark btn-lg">修正</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">戻る</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

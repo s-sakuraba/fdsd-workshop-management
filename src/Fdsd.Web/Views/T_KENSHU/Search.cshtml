@@ -1,0 +1,88 @@
+@model List<Fdsd.Application.Common.KenshuListItemDto>
+@{
+    ViewData["Title"] = "Search";
+}
+
+@{
+    string menuBtn = ViewBag.MenuBtn as string ?? "研修編集";
+}
+
+<br />
+<div class="row">
+    <div class="form-actions no-color">
+        <div class="col-sm-6">
+            <h3>【検索結果】</h3>
+            <h4>検索条件に該当する研修会一覧</h4>
+        </div>
+        <div class="col-sm-2">
+            <a href="@Url.Action("SearchCondition")" class="btn btn-sm btn-secondary">戻る</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <fieldset class="col-sm-12">
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="alert alert-info mt-3">該当する研修はありません。</div>
+        }
+        else
+        {
+            <table class="table">
+                <tr>
+                    <th>
+                        研修日(自)
+                    </th>
+                    <th>
+                        研修日(至)
+                    </th>
+                    <th>
+                        研修会名称
+                    </th>
+                    <th>
+                        主催者名
+                    </th>
+                    <th>
+                        操作
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="col-sm-1">
+                            @item.KenshuDate.ToString("yyyy/MM/dd")
+                        </td>
+                        <td class="col-sm-1">
+                            @(item.EndDate?.ToString("yyyy/MM/dd") ?? "")
+                        </td>
+                        <td class="col-sm-3">
+                            @item.KenshuName
+                        </td>
+                        <td class="col-sm-2">
+                            @item.ShusaiName
+                        </td>
+                        <td class="col-sm-3">
+                            @if (menuBtn == "出欠入力")
+                            {
+                                <a href="@Url.Action("Details", new { id = item.KenshuCd })" class="btn btn-outline-dark btn-sm">詳細</a>
+                                <a href="@Url.Action("Edit", "T_KENSHU_ATTEND", new { id = item.KenshuCd })" class="btn btn-outline-dark btn-sm">出欠登録</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Details", new { id = item.KenshuCd })" class="btn btn-outline-dark btn-sm">詳細</a>
+                                <a href="@Url.Action("Edit", new { id = item.KenshuCd })" class="btn btn-outline-dark btn-sm">編集</a>
+                                <a href="@Url.Action("Edit", "T_KENSHU_ATTEND", new { id = item.KenshuCd })" class="btn btn-outline-dark btn-sm">出欠登録</a>
+                                <a href="@Url.Action("Delete", new { id = item.KenshuCd })" class="btn btn-outline-dark btn-sm">削除</a>
+                            }
+                        </td>
+                        <td class="col-sm-1"></td>
+                    </tr>
+                }
+            </table>
+        }
+    </fieldset>
+</div>
+<div class="row">
+    <div class="form-actions no-color">
+        <a href="@Url.Action("SearchCondition")" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>

@@ -221,6 +221,26 @@ var user = await _userService.GetByEmpUserNmAsync(account, ct);
         return View(detail);
     }
 
+    [HttpGet]
+    public IActionResult InfoDocuDownload(int id, string? targetfile)
+    {
+        if (string.IsNullOrEmpty(targetfile)) return NotFound();
+        var path = System.IO.Path.Combine(InfoDocuPath, id.ToString(), targetfile);
+        if (!System.IO.File.Exists(path)) return NotFound();
+        var bytes = System.IO.File.ReadAllBytes(path);
+        return File(bytes, "application/octet-stream", targetfile);
+    }
+
+    [HttpGet]
+    public IActionResult DocumentDownload(int id, string? targetfile)
+    {
+        if (string.IsNullOrEmpty(targetfile)) return NotFound();
+        var path = System.IO.Path.Combine(DocuPath, id.ToString(), targetfile);
+        if (!System.IO.File.Exists(path)) return NotFound();
+        var bytes = System.IO.File.ReadAllBytes(path);
+        return File(bytes, "application/octet-stream", targetfile);
+    }
+
     //=================================================================
     // S006 研修削除
     //=================================================================
@@ -267,7 +287,7 @@ var user = await _userService.GetByEmpUserNmAsync(account, ct);
 
         var loginUserId = await GetLoginUserIdAsync(ct);
 
-        string? infoDocu = model.UploadFile?.FileName;
+        string? infoDocu = model.UploadFile != null ? model.UploadFile.FileName : model.InfoDocu;
         if (model.UploadFile != null)
         {
             var dir = System.IO.Path.Combine(InfoDocuPath, id.ToString());

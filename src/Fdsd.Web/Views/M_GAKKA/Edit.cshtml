@@ -6,7 +6,6 @@
 <hr />
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 <form asp-action="Edit" method="post">
-    @Html.AntiForgeryToken()
     <input type="hidden" name="id" value="@Model.GAKKACD" />
 
     <div class="form-horizontal">

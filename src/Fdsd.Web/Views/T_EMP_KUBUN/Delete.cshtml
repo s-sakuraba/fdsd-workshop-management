@@ -16,7 +16,6 @@
     </dl>
 
     <form asp-action="Delete" method="post">
-        @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.EmpKubun" />
 
         <div class="form-actions no-color">

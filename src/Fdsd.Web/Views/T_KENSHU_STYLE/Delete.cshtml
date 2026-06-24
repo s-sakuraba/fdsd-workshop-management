@@ -35,7 +35,6 @@
         </div>
     </div>
     <form asp-action="Delete" method="post">
-        @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.ID" />
 
         <div class="form-actions no-color">

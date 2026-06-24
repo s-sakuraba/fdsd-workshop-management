@@ -60,7 +60,6 @@
     </div>
 
     <form asp-action="Delete" method="post">
-        @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.UserId" />
 
         <div class="form-group">

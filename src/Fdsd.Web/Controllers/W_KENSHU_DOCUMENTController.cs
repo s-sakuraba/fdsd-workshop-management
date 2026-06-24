@@ -28,7 +28,7 @@ public class W_KENSHU_DOCUMENTController : Controller
     {
         var doc = new W_Kenshu_Document
         {
-            KENSHUCD = kenshuCd,
+            KENSHUCD = (short)kenshuCd,
             UPDATEUSERID = 0,
             DOCUMENTNAME = documentName,
             DOCUMENTDIR = documentDir,

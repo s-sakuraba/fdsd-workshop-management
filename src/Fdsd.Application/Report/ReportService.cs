@@ -54,7 +54,7 @@ public class ReportService
         var searchTo = endDate ?? DomainRules.MaxDate;
 
         var kenshuQuery = _kenshuRepo.Query().Include(x => x.KenshuStyle).AsQueryable();
-        kenshuQuery = kenshuQuery.Where(x => x.KENSHUDATE >= searchFrom && (x.ENDDATE ?? x.KENSHUDATE) <= searchTo);
+        kenshuQuery = kenshuQuery.Where(x => x.KENSHUDATE <= searchTo && (x.ENDDATE ?? x.KENSHUDATE) >= searchFrom);
         if (fdsdCds?.Length == 1) kenshuQuery = kenshuQuery.Where(x => x.FDSDCD == fdsdCds[0]!.Value);
 
         var trainingList = await kenshuQuery.OrderBy(x => x.KENSHUDATE).ToListAsync(ct);
@@ -162,7 +162,7 @@ public class ReportService
         var searchTo = endDate ?? DomainRules.MaxDate;
 
         var kenshuQuery = _kenshuRepo.Query().AsQueryable();
-        kenshuQuery = kenshuQuery.Where(x => x.KENSHUDATE >= searchFrom && (x.ENDDATE ?? x.KENSHUDATE) <= searchTo);
+        kenshuQuery = kenshuQuery.Where(x => x.KENSHUDATE <= searchTo && (x.ENDDATE ?? x.KENSHUDATE) >= searchFrom);
         if (fdsdCds?.Length == 1) kenshuQuery = kenshuQuery.Where(x => x.FDSDCD == fdsdCds[0]!.Value);
         var trainingList = await kenshuQuery.OrderBy(x => x.KENSHUDATE).ToListAsync(ct);
 
@@ -251,7 +251,7 @@ public class ReportService
             .Include(x => x.KenshuDocuments)
             .AsQueryable();
 
-        kenshuQuery = kenshuQuery.Where(x => x.KENSHUDATE >= searchFrom && (x.ENDDATE ?? x.KENSHUDATE) <= searchTo);
+        kenshuQuery = kenshuQuery.Where(x => x.KENSHUDATE <= searchTo && (x.ENDDATE ?? x.KENSHUDATE) >= searchFrom);
         if (fdsdCds?.Length == 1) kenshuQuery = kenshuQuery.Where(x => x.FDSDCD == fdsdCds[0]!.Value);
 
         var gakkaKenshuCds = await _gakkaRepo.Query()

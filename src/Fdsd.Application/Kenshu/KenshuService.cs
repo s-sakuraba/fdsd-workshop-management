@@ -16,6 +16,7 @@ public class KenshuService
 {
     private readonly IKenshuRepository _kenshuRepo;
     private readonly IKenshuGakkaRepository _gakkaRepo;
+    private readonly IKenshuDocumentRepository _docRepo;
     private readonly IAttendRepository _attendRepo;
     private readonly IGakkaChangeRepository _gakkaChangeRepo;
     private readonly IUserRepository _userRepo;
@@ -28,6 +29,7 @@ public class KenshuService
     public KenshuService(
         IKenshuRepository kenshuRepo,
         IKenshuGakkaRepository gakkaRepo,
+        IKenshuDocumentRepository docRepo,
         IAttendRepository attendRepo,
         IGakkaChangeRepository gakkaChangeRepo,
         IUserRepository userRepo,
@@ -39,6 +41,7 @@ public class KenshuService
     {
         _kenshuRepo = kenshuRepo;
         _gakkaRepo = gakkaRepo;
+        _docRepo = docRepo;
         _attendRepo = attendRepo;
         _gakkaChangeRepo = gakkaChangeRepo;
         _userRepo = userRepo;
@@ -141,7 +144,7 @@ public class KenshuService
                 KenshuPlace = kenshuPlace,
                 INFODOCU = infoDocu,
                 INSERTBI = _clock.Now,
-                INSERTUSERID = loginUserId
+                INSERTUSERID = (short)loginUserId
             };
             _kenshuRepo.Add(kenshu);
             await _uow.SaveChangesAsync(ct);
@@ -152,7 +155,7 @@ public class KenshuService
                 {
                     KENSHUCD = kenshu.KENSHUCD,
                     GAKKACD = gCd,
-                    UPDATEUSERID = loginUserId,
+                    UPDATEUSERID = (short)loginUserId,
                     UPDATEBI = _clock.Now
                 });
             }
@@ -174,7 +177,7 @@ public class KenshuService
                     KENSHUCD = kenshu.KENSHUCD,
                     USERID = uid,
                     ATTEND = (short)AttendStatus.Absent,
-                    UPDATEUSERID = loginUserId,
+                    UPDATEUSERID = (short)loginUserId,
                     UPDATEBI = _clock.Now
                 });
             }
@@ -212,7 +215,7 @@ public class KenshuService
             kenshu.KSTYLECD = styleCd;
             kenshu.KenshuPlace = kenshuPlace;
             kenshu.INFODOCU = infoDocu;
-            kenshu.UPDATEUSERID = loginUserId;
+            kenshu.UPDATEUSERID = (short)loginUserId;
             kenshu.UPDATEBI = _clock.Now;
             _kenshuRepo.Update(kenshu);
 
@@ -230,9 +233,9 @@ public class KenshuService
                 {
                     _gakkaRepo.Add(new T_Kenshu_Gakka
                     {
-                        KENSHUCD = kenshuCd,
+                        KENSHUCD = (short)kenshuCd,
                         GAKKACD = gCd,
-                        UPDATEUSERID = loginUserId,
+                        UPDATEUSERID = (short)loginUserId,
                         UPDATEBI = _clock.Now
                     });
                 }
@@ -258,6 +261,9 @@ public class KenshuService
 
             var gakkas = await _gakkaRepo.GetByKenshuCdAsync(kenshuCd, ct);
             _gakkaRepo.RemoveRange(gakkas);
+
+            var docs = await _docRepo.GetByKenshuCdAsync(kenshuCd, ct);
+            _docRepo.RemoveRange(docs);
 
             var kenshu = await _kenshuRepo.Query().FirstOrDefaultAsync(x => x.KENSHUCD == kenshuCd, ct);
             if (kenshu != null)

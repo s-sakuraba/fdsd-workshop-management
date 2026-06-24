@@ -41,17 +41,18 @@ public class T_KENSHU_ATTENDController : Controller
     public async Task<IActionResult> Edit(int id, CancellationToken ct = default)
     {
         var list = await _attendService.GetAttendListAsync(id, ct);
-        ViewBag.KenshuName = list.FirstOrDefault()?.GakkaName ?? "";
+        ViewBag.KenshuName = await _attendService.GetKenshuNameAsync(id, ct);
         return View(list);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, List<AttendItemDto> attendList, CancellationToken ct = default)
+    public async Task<IActionResult> Edit(int id, List<AttendItemDto>? attendList, CancellationToken ct = default)
     {
         var loginUserId = await GetLoginUserIdAsync(ct);
 
-        var data = attendList.Select(x => (x.UserId, x.Attend)).ToList();
+        var data = (attendList ?? new List<AttendItemDto>())
+            .Select(x => (x.UserId, x.Attend)).ToList();
         await _attendService.SaveAttendsAsync(id, data, loginUserId, ct);
         return RedirectToAction("GetSearchResult", "T_KENSHU");
     }

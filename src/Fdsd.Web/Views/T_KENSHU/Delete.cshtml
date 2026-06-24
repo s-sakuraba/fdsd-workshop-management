@@ -103,7 +103,6 @@
     </div>
 
     <form asp-action="DeleteConfirmed" method="post">
-        @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.KenshuCd" />
 
         <div class="form-actions no-color">

@@ -39,6 +39,12 @@ public class AttendService
         _clock = clock;
     }
 
+    public async Task<string> GetKenshuNameAsync(int kenshuCd, CancellationToken ct = default)
+    {
+        var kenshu = await _kenshuRepo.Query().FirstOrDefaultAsync(x => x.KENSHUCD == kenshuCd, ct);
+        return kenshu?.KENSHUNAME ?? "";
+    }
+
     public async Task<List<AttendItemDto>> GetAttendListAsync(int kenshuCd, CancellationToken ct = default)
     {
         var kenshu = await _kenshuRepo.Query().FirstOrDefaultAsync(x => x.KENSHUCD == kenshuCd, ct);
@@ -102,7 +108,7 @@ public class AttendService
                 if (existing != null)
                 {
                     existing.ATTEND = attend;
-                    existing.UPDATEUSERID = loginUserId;
+                    existing.UPDATEUSERID = (short)loginUserId;
                     existing.UPDATEBI = _clock.Now;
                     _attendRepo.Update(existing);
                 }
@@ -110,10 +116,10 @@ public class AttendService
                 {
                     _attendRepo.Add(new T_Kenshu_Attend
                     {
-                        KENSHUCD = kenshuCd,
+                        KENSHUCD = (short)kenshuCd,
                         USERID = (short)userId,
                         ATTEND = attend,
-                        UPDATEUSERID = loginUserId,
+                        UPDATEUSERID = (short)loginUserId,
                         UPDATEBI = _clock.Now
                     });
                 }

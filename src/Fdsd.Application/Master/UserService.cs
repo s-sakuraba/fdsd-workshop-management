@@ -93,6 +93,7 @@ public class UserService
                 EmpUserNm = empUserNm,
                 GAKKACD = gakkaCd,
                 NyusyaDate = nyusyaDate,
+                TaisyaDate = DomainRules.MaxDate,
                 CorpCd = corpCd,
                 FDSDCD = fdsdCd,
                 ZaisyokuKbn = 1,

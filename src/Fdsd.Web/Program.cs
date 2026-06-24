@@ -75,7 +75,17 @@ builder.Services.AddScoped<LeaveOfAbsenceService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ReportService>();
 
-builder.Services.AddControllersWithViews();
+// 出欠登録など、1画面で多数の対象者(1人あたり複数の隠しフィールド)をPOSTする画面があるため、
+// フォーム値数およびモデルバインドのコレクション上限(既定1024)を引き上げる。
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.ValueCountLimit = 50000;
+});
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.MaxModelBindingCollectionSize = 50000;
+});
 
 var app = builder.Build();
 

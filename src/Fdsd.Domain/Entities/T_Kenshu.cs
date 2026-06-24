@@ -5,7 +5,7 @@ namespace Fdsd.Domain.Entities;
 
 public class T_Kenshu
 {
-    public int KENSHUCD { get; set; }
+    public short KENSHUCD { get; set; }
     public string KENSHUNAME { get; set; } = "";
     public DateTime KENSHUDATE { get; set; }
     public DateTime? ENDDATE { get; set; }
@@ -16,9 +16,9 @@ public class T_Kenshu
     public string? KenshuPlace { get; set; }
     public string? INFODOCU { get; set; }
     public DateTime? INSERTBI { get; set; }
-    public int? INSERTUSERID { get; set; }
+    public short? INSERTUSERID { get; set; }
     public DateTime? UPDATEBI { get; set; }
-    public int? UPDATEUSERID { get; set; }
+    public short? UPDATEUSERID { get; set; }
 
     public T_Kenshu_Style KenshuStyle { get; set; } = null!;
     public ICollection<T_Kenshu_Attend> KenshuAttends { get; set; } = new List<T_Kenshu_Attend>();

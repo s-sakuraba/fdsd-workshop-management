@@ -9,5 +9,5 @@ public class K_Code
     public string NAME { get; set; } = "";
     public string RYAKUSHO { get; set; } = "";
     public short SORT { get; set; }
-    public string BIKO { get; set; } = "";
+    public string? BIKO { get; set; }
 }

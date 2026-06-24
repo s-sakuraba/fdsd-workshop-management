@@ -13,7 +13,6 @@
     <dt class="col-sm-3">終了日</dt><dd class="col-sm-9">@(Model.EndDate?.ToString("yyyy/MM/dd") ?? "継続中")</dd>
 </dl>
 <form asp-action="Delete" method="post">
-    @Html.AntiForgeryToken()
     <input type="hidden" name="id" value="@Model.Id" />
     <button type="submit" class="btn btn-danger btn-lg">削除</button>
     <a href="@Url.Action("Index")" class="btn btn-secondary">戻る</a>

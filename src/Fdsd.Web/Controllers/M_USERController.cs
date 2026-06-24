@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -78,6 +79,7 @@ public class M_USERController : Controller
         var users = await _userService.GetActiveUsersAsync(ct);
         var user = users.Find(u => u.UserId == id);
         if (user == null) return NotFound();
+        ViewBag.EmpKubunName = await GetEmpKubunNameAsync(user.EmpKubun, ct);
         return View(user);
     }
 
@@ -87,7 +89,15 @@ public class M_USERController : Controller
         var users = await _userService.GetActiveUsersAsync(ct);
         var user = users.Find(u => u.UserId == id);
         if (user == null) return NotFound();
+        ViewBag.EmpKubunName = await GetEmpKubunNameAsync(user.EmpKubun, ct);
         return View(user);
+    }
+
+    private async Task<string> GetEmpKubunNameAsync(byte? empKubun, CancellationToken ct)
+    {
+        if (empKubun == null) return "未設定";
+        var list = await _empKubunService.GetAllAsync(ct);
+        return list.FirstOrDefault(e => e.EmpKubun == empKubun.Value)?.KubunName ?? "未設定";
     }
 
     [HttpPost, ActionName("Delete")]

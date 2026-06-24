@@ -12,6 +12,6 @@ public class K_CodeConfiguration : IEntityTypeConfiguration<K_Code>
         builder.HasKey(e => new { e.CODENO, e.CODE });
         builder.Property(e => e.NAME).HasMaxLength(50).IsRequired();
         builder.Property(e => e.RYAKUSHO).HasMaxLength(10);
-        builder.Property(e => e.BIKO).HasMaxLength(200);
+        builder.Property(e => e.BIKO).HasMaxLength(200).IsRequired(false);
     }
 }

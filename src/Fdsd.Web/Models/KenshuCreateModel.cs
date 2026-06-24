@@ -32,4 +32,6 @@ public class KenshuCreateModel
     public short[]? GakkaCds { get; set; }
 
     public IFormFile? UploadFile { get; set; }
+
+    public string? InfoDocu { get; set; }
 }

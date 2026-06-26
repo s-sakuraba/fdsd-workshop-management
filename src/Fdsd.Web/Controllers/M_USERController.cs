@@ -34,6 +34,7 @@ public class M_USERController : Controller
     {
         ViewBag.GakkaList = await _gakkaService.GetAllAsync(ct);
         ViewBag.EmpKubunList = await _empKubunService.GetAllAsync(ct);
+        ViewBag.NextEmpCd = await _userService.GetNextEmpCdAsync(ct);
         return View();
     }
 

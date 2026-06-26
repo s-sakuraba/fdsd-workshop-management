@@ -25,6 +25,27 @@ public class T_GAKKA_ORDERController : Controller
     public async Task<IActionResult> Index(CancellationToken ct = default)
     {
         var orders = await _service.GetAllGakkaOrdersAsync(ct);
+        var maxOrderNo = orders
+            .Select(o => o.OrderNo)
+            .Where(n => n >= 1)
+            .DefaultIfEmpty((short)0)
+            .Max();
+        var nextOrderNo = maxOrderNo + 1;
+        var usedOrderNos = new HashSet<short>();
+
+        foreach (var order in orders)
+        {
+            if (order.OrderNo < 1 || !usedOrderNos.Add(order.OrderNo))
+            {
+                while (usedOrderNos.Contains((short)nextOrderNo))
+                    nextOrderNo++;
+
+                order.OrderNo = (short)nextOrderNo;
+                usedOrderNos.Add(order.OrderNo);
+                nextOrderNo++;
+            }
+        }
+
         var gakkas = await _gakkaService.GetAllAsync(ct);
         ViewBag.GakkaNamesLookup = gakkas.ToDictionary(g => g.GakkaCd, g => g.GakkaName);
         return View(orders);

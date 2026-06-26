@@ -22,7 +22,11 @@ public class M_GAKKAController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create() => View();
+    public async Task<IActionResult> Create(CancellationToken ct = default)
+    {
+        ViewBag.NextGakkaCd = await _gakkaService.GetNextGakkaCdAsync(ct);
+        return View();
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]

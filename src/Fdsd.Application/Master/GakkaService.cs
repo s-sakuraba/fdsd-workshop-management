@@ -37,6 +37,18 @@ public class GakkaService
     public Task<M_Gakka?> GetByIdAsync(short id, CancellationToken ct = default)
         => _gakkaRepo.GetByIdAsync(id, ct);
 
+    public async Task<short> GetNextGakkaCdAsync(CancellationToken ct = default)
+    {
+        var max = await _gakkaRepo.Query().MaxAsync(x => (short?)x.GAKKACD, ct) ?? 0;
+        return (short)(max + 1);
+    }
+
+    public async Task<short> GetNextFdsdCdAsync(CancellationToken ct = default)
+    {
+        var max = await _gakkaRepo.Query().MaxAsync(x => x.FDSDCD, ct) ?? 0;
+        return (short)(max + 1);
+    }
+
     public async Task CreateAsync(short gakkaCd, string gakkaName, string? gakkaRyaku, short? fdsdCd, CancellationToken ct = default)
     {
         await using var tx = await _uow.BeginTransactionAsync(ct);

@@ -15,7 +15,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">学科コード</label>
             <div class="col-md-10">
-                <input name="gakkaCd" type="number" class="form-control" style="max-width:280px;" required />
+                <input name="gakkaCd" type="number" value="@ViewBag.NextGakkaCd" min="1" class="form-control" style="max-width:280px;" required />
             </div>
         </div>
 
@@ -36,7 +36,10 @@
         <div class="form-group">
             <label class="control-label col-md-2">FDSD区分</label>
             <div class="col-md-10">
-                <input name="fdsdCd" type="number" class="form-control" style="max-width:280px;" />
+                <select name="fdsdCd" class="form-select" style="max-width:280px;" required>
+                    <option value="2">FD</option>
+                    <option value="1">SD</option>
+                </select>
             </div>
         </div>
 

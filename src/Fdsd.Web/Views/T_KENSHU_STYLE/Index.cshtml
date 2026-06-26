@@ -41,7 +41,7 @@
                     <input type="hidden" name="ids" value="@item.ID" />
                 </td>
                 <td class="col-sm-1">
-                    <input type="number" name="sorts" value="@item.SORT" class="form-control" style="width:80px;" />
+                    <input type="number" name="sorts" value="@item.SORT" min="1" class="form-control" style="width:80px;" />
                 </td>
                 <td class="col-sm-1">
                     <a href="@Url.Action("Delete", new { id = item.ID })" class="btn btn-sm btn-outline-dark">削除</a>

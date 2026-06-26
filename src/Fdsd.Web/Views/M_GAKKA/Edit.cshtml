@@ -26,7 +26,24 @@
         <div class="form-group">
             <label class="control-label col-md-2">FDSD区分</label>
             <div class="col-md-10">
-                <input name="fdsdCd" type="number" value="@Model.FDSDCD" class="form-control" style="max-width:280px;" />
+                <select name="fdsdCd" class="form-select" style="max-width:280px;" required>
+                    @if (Model.FDSDCD == 2)
+                    {
+                        <option value="2" selected>FD</option>
+                    }
+                    else
+                    {
+                        <option value="2">FD</option>
+                    }
+                    @if (Model.FDSDCD == 1)
+                    {
+                        <option value="1" selected>SD</option>
+                    }
+                    else
+                    {
+                        <option value="1">SD</option>
+                    }
+                </select>
             </div>
         </div>
 

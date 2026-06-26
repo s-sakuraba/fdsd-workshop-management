@@ -21,13 +21,17 @@ public class T_KENSHU_STYLEController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create() => View();
+    public async Task<IActionResult> Create(CancellationToken ct = default)
+    {
+        ViewBag.NextSort = await _service.GetNextSortAsync(ct);
+        return View();
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(string name, string bikou, CancellationToken ct = default)
+    public async Task<IActionResult> Create(string name, short sort, string? bikou, CancellationToken ct = default)
     {
-        await _service.CreateAsync(name, bikou, ct);
+        await _service.CreateAsync(name, sort, bikou, ct);
         return RedirectToAction(nameof(Index));
     }
 

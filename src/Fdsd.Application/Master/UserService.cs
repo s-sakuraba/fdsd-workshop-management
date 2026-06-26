@@ -70,6 +70,12 @@ public class UserService
         return await _userRepo.Query().AnyAsync(x => x.EmpUserNm == empUserNm, ct);
     }
 
+    public async Task<short> GetNextEmpCdAsync(CancellationToken ct = default)
+    {
+        var max = await _userRepo.Query().MaxAsync(x => (short?)x.EmpCd, ct) ?? 0;
+        return (short)(max + 1);
+    }
+
     public async Task<bool> IsAdministratorAsync(string empUserNm, CancellationToken ct = default)
     {
         var user = await _userRepo.GetByEmpUserNmAsync(empUserNm, ct);

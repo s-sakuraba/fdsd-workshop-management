@@ -1,43 +1,47 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fdsd.Application.Abstractions;
 using Fdsd.Application.Common;
 using Fdsd.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fdsd.Application.Master;
 
 public class StyleService
 {
     private readonly IKenshuStyleRepository _repo;
-    private readonly IM_IdManageRepository _idRepo;
     private readonly IUnitOfWork _uow;
     private readonly IClock _clock;
 
-    public StyleService(IKenshuStyleRepository repo, IM_IdManageRepository idRepo, IUnitOfWork uow, IClock clock)
+    public StyleService(IKenshuStyleRepository repo, IUnitOfWork uow, IClock clock)
     {
         _repo = repo;
-        _idRepo = idRepo;
         _uow = uow;
         _clock = clock;
     }
 
     public Task<List<T_Kenshu_Style>> GetAllAsync(CancellationToken ct) => _repo.GetAllOrderedAsync(ct);
 
-    public async Task<short> CreateAsync(string name, string bikou, CancellationToken ct = default)
+    public async Task<short> GetNextSortAsync(CancellationToken ct = default)
     {
-        var id = await _idRepo.GetNextIdAsync("T_KENSHU_STYLE", ct);
+        var max = await _repo.Query().MaxAsync(x => (short?)x.SORT, ct) ?? 0;
+        return (short)(max + 1);
+    }
+
+    public async Task<short> CreateAsync(string name, short sort, string? bikou, CancellationToken ct = default)
+    {
         var style = new T_Kenshu_Style
         {
-            ID = (short)id,
             NAME = name,
             RYAKUSHO = name.Length > 10 ? name.Substring(0, 10) : name,
             BIKO = bikou,
-            SORT = 0
+            SORT = sort
         };
         _repo.Add(style);
         await _uow.SaveChangesAsync(ct);
-        return (short)id;
+        return style.ID;
     }
 
     public async Task UpdateSortAsync(List<(short id, short sort)> items, CancellationToken ct = default)

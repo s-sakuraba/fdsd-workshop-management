@@ -32,12 +32,18 @@ public class LeaveOfAbsenceService
 
     public async Task AddAsync(T_Leave_Of_Absence entity, CancellationToken ct = default)
     {
+        var user = await _userRepo.GetByIdAsync(entity.USERID, ct);
+        if (user == null) throw new NotFoundException(nameof(M_User), entity.USERID);
+
         _repo.Add(entity);
         await _uow.SaveChangesAsync(ct);
     }
 
     public async Task UpdateAsync(T_Leave_Of_Absence entity, CancellationToken ct = default)
     {
+        var user = await _userRepo.GetByIdAsync(entity.USERID, ct);
+        if (user == null) throw new NotFoundException(nameof(M_User), entity.USERID);
+
         _repo.Update(entity);
         await _uow.SaveChangesAsync(ct);
     }

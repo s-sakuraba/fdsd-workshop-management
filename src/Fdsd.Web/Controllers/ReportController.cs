@@ -21,6 +21,13 @@ public class ReportController : Controller
 
     public IActionResult Index() => View();
 
+    private static void EnsureOutputDirectory(string filePath)
+    {
+        var dir = System.IO.Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrWhiteSpace(dir))
+            System.IO.Directory.CreateDirectory(dir);
+    }
+
     private (DateTime? startDate, DateTime? endDate, short?[]? fdsdCds, short[] gakkaCds) ReadConditions()
     {
         short?[]? fdsdCds = null;
@@ -46,6 +53,7 @@ public class ReportController : Controller
     public async Task<IActionResult> Report_P001(CancellationToken ct = default)
     {
         var tempFile = _config["FilePaths:P001Temp"] ?? @"C:\Temp\研修会出席状況表_temp.xlsx";
+        EnsureOutputDirectory(tempFile);
         var (startDate, endDate, fdsdCds, gakkaCds) = ReadConditions();
         await _reportService.GenerateP001Async(tempFile, startDate, endDate, fdsdCds, gakkaCds, ct);
         var bytes = await System.IO.File.ReadAllBytesAsync(tempFile, ct);
@@ -55,6 +63,7 @@ public class ReportController : Controller
     public async Task<IActionResult> Report_P002(CancellationToken ct = default)
     {
         var tempFile = _config["FilePaths:P002Temp"] ?? @"C:\Temp\研修会未受講者_temp.xlsx";
+        EnsureOutputDirectory(tempFile);
         var (startDate, endDate, fdsdCds, gakkaCds) = ReadConditions();
         await _reportService.GenerateP002Async(tempFile, startDate, endDate, fdsdCds, gakkaCds, ct);
         var bytes = await System.IO.File.ReadAllBytesAsync(tempFile, ct);
@@ -65,6 +74,7 @@ public class ReportController : Controller
     {
         var templatePath = _config["FilePaths:P003Template"] ?? @"C:\Temp\研修実績一覧表_template.xlsx";
         var tempFile = _config["FilePaths:P003Temp"] ?? @"C:\Temp\研修実績一覧表_temp.xlsx";
+        EnsureOutputDirectory(tempFile);
         var (startDate, endDate, fdsdCds, gakkaCds) = ReadConditions();
         await _reportService.GenerateP003Async(templatePath, tempFile, startDate, endDate, fdsdCds, gakkaCds, ct);
         var bytes = await System.IO.File.ReadAllBytesAsync(tempFile, ct);

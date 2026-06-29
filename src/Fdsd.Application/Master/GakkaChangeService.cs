@@ -38,8 +38,11 @@ public class GakkaChangeService
                       )).ToListAsync(ct);
     }
 
-    public async Task AddAsync(int userId, short gakkaCd, DateTime dateOfArrival, CancellationToken ct = default)
+    public async Task AddAsync(int userId, short gakkaCd, DateTime dateOfArrival, DateTime? dateOfDeparture, CancellationToken ct = default)
     {
+        var user = await _userRepo.GetByIdAsync(userId, ct);
+        if (user == null) throw new NotFoundException(nameof(M_User), userId);
+
         await using var tx = await _uow.BeginTransactionAsync(ct);
         try
         {
@@ -48,7 +51,7 @@ public class GakkaChangeService
                 .OrderByDescending(x => x.DateOfArrival)
                 .FirstOrDefaultAsync(ct);
 
-            if (prev != null && prev.DateOfDeparture == null)
+            if (prev != null && (prev.DateOfDeparture == null || prev.DateOfDeparture == DomainRules.MaxDate))
             {
                 prev.DateOfDeparture = dateOfArrival.AddDays(-1);
                 _repo.Update(prev);
@@ -59,7 +62,7 @@ public class GakkaChangeService
                 USERID = (short)userId,
                 GAKKACD = gakkaCd,
                 DateOfArrival = dateOfArrival,
-                DateOfDeparture = null
+                DateOfDeparture = dateOfDeparture ?? DomainRules.MaxDate
             });
 
             await _uow.SaveChangesAsync(ct);
@@ -85,7 +88,7 @@ public class GakkaChangeService
                 .FirstOrDefaultAsync(ct);
 
             if (prev != null)
-                prev.DateOfDeparture = null;
+                prev.DateOfDeparture = DomainRules.MaxDate;
 
             _repo.Remove(target);
             await _uow.SaveChangesAsync(ct);

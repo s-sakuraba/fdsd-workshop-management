@@ -39,9 +39,9 @@ public class T_GAKKA_CHANGEController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int userId, short gakkaCd, System.DateTime dateOfArrival, CancellationToken ct = default)
+    public async Task<IActionResult> Create(int userId, short gakkaCd, System.DateTime dateOfArrival, System.DateTime? dateOfDeparture, CancellationToken ct = default)
     {
-        await _service.AddAsync(userId, gakkaCd, dateOfArrival, ct);
+        await _service.AddAsync(userId, gakkaCd, dateOfArrival, dateOfDeparture, ct);
         return RedirectToAction(nameof(Index));
     }
 

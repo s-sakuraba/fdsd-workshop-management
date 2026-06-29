@@ -10,7 +10,7 @@ public class T_Kenshu_DocumentConfiguration : IEntityTypeConfiguration<T_Kenshu_
     {
         builder.ToTable("T_KENSHU_DOCUMENT");
         builder.HasKey(e => e.ID);
-        builder.Property(e => e.ID).ValueGeneratedOnAdd();
+        builder.Property(e => e.ID).ValueGeneratedNever();
         builder.Property(e => e.DOCUMENTNAME).HasMaxLength(256).IsRequired();
         builder.Property(e => e.DOCUMENTDIR).HasMaxLength(256).IsRequired();
 

@@ -15,7 +15,7 @@
             <h4>検索条件に該当する研修会一覧</h4>
         </div>
         <div class="col-sm-2">
-            <a href="@Url.Action("SearchCondition")" class="btn btn-sm btn-secondary">戻る</a>
+            <a href="@Url.Action("SearchCondition", new { actName = menuBtn })" class="btn btn-sm btn-secondary">戻る</a>
         </div>
     </div>
 </div>
@@ -83,6 +83,6 @@
 </div>
 <div class="row">
     <div class="form-actions no-color">
-        <a href="@Url.Action("SearchCondition")" class="btn btn-sm btn-secondary">戻る</a>
+        <a href="@Url.Action("SearchCondition", new { actName = menuBtn })" class="btn btn-sm btn-secondary">戻る</a>
     </div>
 </div>

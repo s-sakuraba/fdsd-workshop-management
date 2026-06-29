@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -12,6 +13,7 @@ using Fdsd.Application.Kenshu;
 using Fdsd.Application.Attend;
 using Fdsd.Application.Master;
 using Fdsd.Application.Report;
+using Fdsd.Web.Authentication;
 using Fdsd.Web.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,8 +24,31 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-    .AddNegotiate();
+// Windows認証の切替設定:
+// appsettings の Auth:EnableWindowsAuthentication で認証方式を選択する。
+// true  = Windows認証 (Negotiate)
+// false = 開発用バイパス認証 (DevBypassAuthenticationHandler)
+var windowsAuthenticationEnabled = builder.Configuration.GetValue<bool?>("Auth:EnableWindowsAuthentication") ?? true;
+
+if (windowsAuthenticationEnabled)
+{
+    // 本番/通常運用向け: Windows統合認証を使用
+    builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+        .AddNegotiate();
+}
+else
+{
+    // 動作確認向け: 疑似ログインユーザーで認証を通す
+    // 利用ユーザーは Auth:BypassAccount（未指定時はOSユーザー）で決まる
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = DevBypassAuthenticationHandler.SchemeName;
+        options.DefaultChallengeScheme = DevBypassAuthenticationHandler.SchemeName;
+    })
+    .AddScheme<AuthenticationSchemeOptions, DevBypassAuthenticationHandler>(
+        DevBypassAuthenticationHandler.SchemeName,
+        _ => { });
+}
 
 builder.Services.AddScoped<IAuthorizationHandler, AdminAuthorizationHandler>();
 
@@ -42,7 +67,7 @@ builder.Services.AddDbContext<FdsdDbContext>(options =>
 
 // Infrastructure
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
-builder.Services.AddSingleton<IClock, SystemClock>();
+builder.Services.AddSingleton<IClock, Fdsd.Infrastructure.SystemClock>();
 builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
 builder.Services.AddSingleton<IExcelReportWriter, ExcelReportWriter>();
 

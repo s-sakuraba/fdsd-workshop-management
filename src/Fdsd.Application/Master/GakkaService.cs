@@ -29,7 +29,8 @@ public class GakkaService
         var orderLookup = orders.ToDictionary(o => (int)o.GAKKACD, o => (short?)o.OrderNo);
 
         return list.Select(g => new GakkaDto(
-            g.GAKKACD, g.GAKKANAME, g.FDSDCD,
+            g.GAKKACD, g.GAKKANAME, g.GAKKARYAKU,
+            g.FDSDCD,
             orderLookup.GetValueOrDefault(g.GAKKACD) ?? 999
         )).ToList();
     }

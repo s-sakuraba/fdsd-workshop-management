@@ -5,7 +5,7 @@ namespace Fdsd.Application.Common;
 
 public record UserDto(int UserId, short EmpCd, string EmpName, string EmpUserNm, short GakkaCd, string GakkaName, DateTime? NyusyaDate, DateTime? TaisyaDate, short FdsdCd, short UserRole, short? ZaisyokuKbn, byte? EmpKubun);
 
-public record GakkaDto(short GakkaCd, string GakkaName, short? FdsdCd, short OrderNo);
+public record GakkaDto(short GakkaCd, string GakkaName, string GakkaRyaku, short? FdsdCd, short OrderNo);
 
 public record KenshuListItemDto(int KenshuCd, string KenshuName, DateTime KenshuDate, DateTime? EndDate, string FdsdName, string ShusaiName, string KenshuStyleName);
 

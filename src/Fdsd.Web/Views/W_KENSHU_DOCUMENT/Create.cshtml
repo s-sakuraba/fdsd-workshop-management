@@ -1,3 +1,39 @@
 @{ViewData["Title"] = "資料追加";}
-<h3>資料追加</h3>
-<p>資料追加機能は編集中です。</p>
+
+<br />
+<div class="form-actions no-color">
+    <div class="col-sm-6">
+        <h3>【資料追加】</h3>
+    </div>
+    <div class="col-sm-2">
+        <a href="@Url.Action("Edit", "T_KENSHU", new { id = ViewBag.KenshuCd })" class="btn btn-sm btn-secondary">戻る</a>
+    </div>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var msg in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@msg.ErrorMessage</p>
+        }
+    </div>
+}
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="container">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="kenshuCd" value="@ViewBag.KenshuCd" />
+
+    <div class="form-group row mt-3">
+        <label class="col-md-3 col-form-label">ファイル選択 ※</label>
+        <div class="col-md-6">
+            <input type="file" name="uploadFile" class="form-control" required />
+        </div>
+    </div>
+
+    <div class="form-group row mt-4">
+        <div class="col-md-6 offset-md-3">
+            <button type="submit" class="btn btn-outline-dark">追加</button>
+        </div>
+    </div>
+</form>

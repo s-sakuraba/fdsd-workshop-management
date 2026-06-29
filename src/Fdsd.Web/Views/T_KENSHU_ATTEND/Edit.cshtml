@@ -2,13 +2,14 @@
 @{
     ViewData["Title"] = "Edit";
     string kenshuNAME = ViewBag.KenshuName as string ?? "";
+    int kenshuCd = ViewBag.KenshuCd is int id ? id : 0;
 }
 
 @{
     var queryGakka = Model.OrderBy(x => x.GakkaOrderNo).GroupBy(x => new { GAKKACD = x.GakkaCd, GAKKANAME = x.GakkaName });
 }
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" asp-route-id="@kenshuCd" method="post">
 
     <div class="form-horizontal">
         <p>

@@ -40,8 +40,12 @@ public class T_KENSHU_ATTENDController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(int id, CancellationToken ct = default)
     {
+        var kenshuName = await _attendService.GetKenshuNameAsync(id, ct);
+        if (string.IsNullOrEmpty(kenshuName)) return NotFound();
+
         var list = await _attendService.GetAttendListAsync(id, ct);
-        ViewBag.KenshuName = await _attendService.GetKenshuNameAsync(id, ct);
+        ViewBag.KenshuName = kenshuName;
+        ViewBag.KenshuCd = id;
         return View(list);
     }
 

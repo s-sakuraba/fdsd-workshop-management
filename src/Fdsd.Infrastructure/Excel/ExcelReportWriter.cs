@@ -8,6 +8,13 @@ namespace Fdsd.Infrastructure.Excel;
 
 public class ExcelReportWriter : IExcelReportWriter
 {
+    private static void EnsureOutputDirectory(string filePath)
+    {
+        var dir = System.IO.Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrWhiteSpace(dir))
+            System.IO.Directory.CreateDirectory(dir);
+    }
+
     public async Task<string> CreateP001Async(
         string tempFilePath,
         string period,
@@ -66,6 +73,7 @@ public class ExcelReportWriter : IExcelReportWriter
             }
         }
 
+        EnsureOutputDirectory(tempFilePath);
         await Task.Run(() => workbook.SaveAs(tempFilePath));
         return tempFilePath;
     }
@@ -104,6 +112,7 @@ public class ExcelReportWriter : IExcelReportWriter
             row++;
         }
 
+        EnsureOutputDirectory(tempFilePath);
         await Task.Run(() => workbook.SaveAs(tempFilePath));
         return tempFilePath;
     }
@@ -144,6 +153,7 @@ public class ExcelReportWriter : IExcelReportWriter
             dataRow++;
         }
 
+        EnsureOutputDirectory(tempFilePath);
         await Task.Run(() => workbook.SaveAs(tempFilePath));
         return tempFilePath;
     }

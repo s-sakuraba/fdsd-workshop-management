@@ -17,7 +17,15 @@ public class T_USER_ORDERController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(CancellationToken ct = default)
     {
-        return View(await _service.GetAllUserOrdersAsync(ct));
+        var orders = await _service.GetAllUserOrdersAsync(ct);
+
+        // 負の値（-1以下）を 0 に補正する（0は許容）
+        foreach (var o in orders)
+        {
+            if (o.OrderNo < 0) o.OrderNo = 0;
+        }
+
+        return View(orders);
     }
 
     [HttpPost]

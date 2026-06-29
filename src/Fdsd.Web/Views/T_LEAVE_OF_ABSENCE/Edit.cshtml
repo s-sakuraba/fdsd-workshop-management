@@ -13,7 +13,7 @@
 
     <div class="form-horizontal">
         <div class="form-group">
-            <label class="control-label col-md-2">EmpName</label>
+            <label class="control-label col-md-2">教職員名</label>
             <div class="col-md-10">
                 <select name="userId" class="form-select" style="max-width:280px;" required>
                     @foreach (var u in userList)
@@ -32,14 +32,14 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">StartDate</label>
+            <label class="control-label col-md-2">休職開始日</label>
             <div class="col-md-10">
                 <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" class="form-control" style="max-width:280px;" required />
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">EndDate</label>
+            <label class="control-label col-md-2">休職終了日</label>
             <div class="col-md-10">
                 <input type="date" name="endDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd") ?? "")" class="form-control" style="max-width:280px;" />
             </div>

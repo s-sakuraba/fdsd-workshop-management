@@ -251,6 +251,40 @@ public class KenshuService
         }
     }
 
+    // -------------------------------------------------------
+    // 配布資料 追加 / 取得 / 削除
+    // -------------------------------------------------------
+    public async Task AddDocumentAsync(int kenshuCd, string documentName, string documentDir, int loginUserId, CancellationToken ct = default)
+    {
+        var nextId = (await _docRepo.Query().MaxAsync(x => (int?)x.ID) ?? 0) + 1;
+        var doc = new T_Kenshu_Document
+        {
+            ID = nextId,
+            KENSHUCD = (short)kenshuCd,
+            DOCUMENTNAME = documentName,
+            DOCUMENTDIR = documentDir,
+            UPDATEBI = _clock.Now,
+            UPDATEUSERID = (short)loginUserId
+        };
+        _docRepo.Add(doc);
+        await _uow.SaveChangesAsync(ct);
+    }
+
+    public async Task<T_Kenshu_Document?> GetDocumentAsync(int id, CancellationToken ct = default)
+    {
+        return await _docRepo.Query().FirstOrDefaultAsync(x => x.ID == id, ct);
+    }
+
+    public async Task DeleteDocumentAsync(int id, CancellationToken ct = default)
+    {
+        var doc = await _docRepo.Query().FirstOrDefaultAsync(x => x.ID == id, ct);
+        if (doc != null)
+        {
+            _docRepo.Remove(doc);
+            await _uow.SaveChangesAsync(ct);
+        }
+    }
+
     public async Task DeleteAsync(int kenshuCd, CancellationToken ct = default)
     {
         await using var tx = await _uow.BeginTransactionAsync(ct);

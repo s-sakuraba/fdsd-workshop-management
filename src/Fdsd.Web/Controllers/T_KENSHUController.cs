@@ -98,7 +98,7 @@ var user = await _userService.GetByEmpUserNmAsync(account, ct);
     public async Task<IActionResult> SearchCondition(string? actName, CancellationToken ct = default)
     {
         ViewBag.GakkaList = await _gakkaService.GetAllAsync(ct);
-        ViewBag.ActName = actName ?? "研修編集";
+        ViewBag.ActName = actName ?? TempData["MenuBtn"] as string ?? "研修編集";
         return View();
     }
 

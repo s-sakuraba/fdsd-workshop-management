@@ -108,7 +108,7 @@ public class ReportService
                         (du.gc.DateOfDeparture.HasValue && du.gc.DateOfDeparture < t.KENSHUDATE) ||
                         (du.u.TaisyaDate.HasValue && du.u.TaisyaDate.Value < t.KENSHUDATE))
                     {
-                        symbols.Add("/");
+                        symbols.Add("／");
                         continue;
                     }
 

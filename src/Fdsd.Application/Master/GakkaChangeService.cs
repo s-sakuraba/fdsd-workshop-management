@@ -82,13 +82,19 @@ public class GakkaChangeService
         await using var tx = await _uow.BeginTransactionAsync(ct);
         try
         {
-            var prev = await _repo.Query()
-                .Where(x => x.USERID == target.USERID && x.ID != id)
-                .OrderByDescending(x => x.DateOfArrival)
-                .FirstOrDefaultAsync(ct);
+            // 末尾(現在所属)の行を削除する場合のみ、直前の行を現在所属として再開する。
+            // 中間・過去の行を削除しても他の在籍期間は変更しない。
+            var isCurrent = target.DateOfDeparture == null || target.DateOfDeparture == DomainRules.MaxDate;
+            if (isCurrent)
+            {
+                var prev = await _repo.Query()
+                    .Where(x => x.USERID == target.USERID && x.ID != id)
+                    .OrderByDescending(x => x.DateOfArrival)
+                    .FirstOrDefaultAsync(ct);
 
-            if (prev != null)
-                prev.DateOfDeparture = DomainRules.MaxDate;
+                if (prev != null)
+                    prev.DateOfDeparture = DomainRules.MaxDate;
+            }
 
             _repo.Remove(target);
             await _uow.SaveChangesAsync(ct);

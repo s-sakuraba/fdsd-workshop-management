@@ -143,6 +143,7 @@ public class UserService
     {
         var user = await _userRepo.GetByIdAsync(userId, ct);
         if (user == null) throw new NotFoundException(nameof(M_User), userId);
+        var previousGakkaCd = user.GAKKACD;
 
         var gakka = await _gakkaRepo.GetByIdAsync(gakkaCd, ct);
         var fdsdCd = gakka?.FDSDCD ?? 1;
@@ -157,6 +158,40 @@ public class UserService
             user.FDSDCD = fdsdCd;
             user.EmpKubun = empKubun;
             _userRepo.Update(user);
+
+            if (previousGakkaCd != gakkaCd)
+            {
+                var effectiveDate = _clock.Now.Date;
+                var currentChange = await _gakkaChangeRepo.Query()
+                    .Where(x => x.USERID == userId
+                        && x.DateOfArrival <= effectiveDate
+                        && (x.DateOfDeparture == null || x.DateOfDeparture >= effectiveDate))
+                    .OrderByDescending(x => x.DateOfArrival)
+                    .FirstOrDefaultAsync(ct);
+
+                if (currentChange != null && currentChange.DateOfArrival.Date == effectiveDate)
+                {
+                    currentChange.GAKKACD = gakkaCd;
+                    _gakkaChangeRepo.Update(currentChange);
+                }
+                else
+                {
+                    if (currentChange != null)
+                    {
+                        currentChange.DateOfDeparture = effectiveDate.AddDays(-1);
+                        _gakkaChangeRepo.Update(currentChange);
+                    }
+
+                    _gakkaChangeRepo.Add(new T_Gakka_Change
+                    {
+                        USERID = (short)userId,
+                        GAKKACD = gakkaCd,
+                        DateOfArrival = effectiveDate,
+                        DateOfDeparture = DomainRules.MaxDate
+                    });
+                }
+            }
+
             await _uow.SaveChangesAsync(ct);
             await tx.CommitAsync(ct);
         }
@@ -180,7 +215,7 @@ public class UserService
             _userRepo.Update(user);
 
             var changes = await _gakkaChangeRepo.Query()
-                .Where(x => x.USERID == userId && x.DateOfDeparture == null)
+                .Where(x => x.USERID == userId && (x.DateOfDeparture == null || x.DateOfDeparture == DomainRules.MaxDate))
                 .ToListAsync(ct);
             foreach (var c in changes)
             {

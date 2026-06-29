@@ -225,7 +225,9 @@ var user = await _userService.GetByEmpUserNmAsync(account, ct);
     public IActionResult InfoDocuDownload(int id, string? targetfile)
     {
         if (string.IsNullOrEmpty(targetfile)) return NotFound();
-        var path = System.IO.Path.Combine(InfoDocuPath, id.ToString(), targetfile);
+        var fileName = System.IO.Path.GetFileName(targetfile);
+        if (fileName != targetfile) return NotFound();
+        var path = System.IO.Path.Combine(InfoDocuPath, id.ToString(), fileName);
         if (!System.IO.File.Exists(path)) return NotFound();
         var bytes = System.IO.File.ReadAllBytes(path);
         return File(bytes, "application/octet-stream", targetfile);
@@ -235,7 +237,9 @@ var user = await _userService.GetByEmpUserNmAsync(account, ct);
     public IActionResult DocumentDownload(int id, string? targetfile)
     {
         if (string.IsNullOrEmpty(targetfile)) return NotFound();
-        var path = System.IO.Path.Combine(DocuPath, id.ToString(), targetfile);
+        var fileName = System.IO.Path.GetFileName(targetfile);
+        if (fileName != targetfile) return NotFound();
+        var path = System.IO.Path.Combine(DocuPath, id.ToString(), fileName);
         if (!System.IO.File.Exists(path)) return NotFound();
         var bytes = System.IO.File.ReadAllBytes(path);
         return File(bytes, "application/octet-stream", targetfile);
